@@ -1,0 +1,21 @@
+{
+  "name": "gamesshop",
+  "version": "1.0.0",
+  "description": "practica ADI",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "jwt-simple": "^0.5.1",
+    "knex": "^0.13.0",
+    "moment": "^2.18.1",
+    "sqlite3": "^3.1.13",
+    "uuid": "^3.1.0"
+  }
+}
