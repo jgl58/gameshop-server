@@ -266,7 +266,7 @@ app.put('/users/:id/orders/:idOrder/pay',function(req, res){
 
 //Este método delega en el server.listen "nativo" de Node
    
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     
     knex.schema.createTableIfNotExists('categories', function (table) {
         table.increments('categories_id');
