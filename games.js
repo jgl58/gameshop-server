@@ -4,6 +4,7 @@ var knex = require('knex')({
       filename: "./mydb.db"
     }
 });
+var comments = require('./comments.js')
 
 
 exports.getGames = function(pet,resp){
@@ -26,11 +27,16 @@ exports.getGameById = function(pet,resp){
     var id = parseInt(pet.params.id); 
     if(isNaN(id)){
         resp.status(400);
-        resp.send("La id tiene que ser numerica");
+        resp.send("La id del juego tiene que ser numerica");
     }else{    
         knex('games').select().where('games_id',id)
         .then(function(data){
-            resp.status(200).json(data)
+            comments.getComments(id, function(c){
+                resp.status(200).json({
+                    "game": data,
+                    "comments": c
+                })
+            })
         }).catch((error) => {
             resp.status(404).send({userMessage:"El item no se ha encontrado",devMessage:""});
         });

@@ -31,7 +31,7 @@ exports.comprar = function(req,res,next){
         res.status(401).send({userMessage: "Necesitas iniciar sesion", devMessage: ""})
     }else{
         var cookies = jwt.decode(token, secret);
-        console.log(cookies)
+        console.log(idGame)
         if(isNaN(idGame)){
             res.status(401).send({userMessage: "La id debe ser numerica", devMessage: ""})
         }else{
@@ -46,7 +46,6 @@ exports.loguear = function(pet,res){
     var nick = data.nick;
     var pass = data.pass;
    
-
      users.existsUser(nick, function(exists){
          if(exists){
              users.getUserByNick(nick, function(data){

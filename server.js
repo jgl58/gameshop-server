@@ -23,6 +23,7 @@ var games = require('./games.js')
 var users = require('./users.js')
 var pedidos = require('./pedidos.js')
 var auth = require('./auth.js')
+var comments = require('./comments.js')
 
 
 //GAMES
@@ -30,12 +31,15 @@ app.get('/games', games.getGames);
 app.get('/games/:id',games.getGameById);
 app.get('/games/categories/:id',games.getGamesByCategory);
 
+//COMMENTS
+app.post('/games/:idGame/comments',auth.comprar,comments.createComment)
+
 //LOGIN
 app.post('/login',auth.loguear);
 app.post('/register',users.createUser);
 
 //PEDIDOS
-app.post('/games/:idGame/linPed',pedidos.createPedido)
+app.post('/games/:idGame/linPed',auth.comprar,pedidos.createPedido)
 app.get('/users/:id/orders',auth.login,pedidos.getPedidos)
 app.put('/users/:id/orders/:idOrder/pay',auth.login,pedidos.pagarPedido)
 app.delete('/users/:id/orders/:idOrder',auth.login,pedidos.deletePedido)
