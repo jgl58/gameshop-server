@@ -19,38 +19,88 @@ var knex = require('knex')({
     }
 });
 
-exports.getPedidos = function(id,callback){
-  
-    knex('orders').select('orders_id','games.*').where('user_id',id).join('games','game_id','games_id').then(function(query){
-        callback(query)
-    })
+var games = require('./games.js')
+
+exports.getPedidos = function(pet,res){
+    var id = parseInt(pet.params.id)
+    var token = pet.headers.token;
+    console.log("Token: "+token)
+    var secret = '123456'
+    if(isNaN(id)){
+        res.status(401).send({userMessage: "La id del usuario tiene que ser numerica", devMessage: ""})
+    }else{
+        knex('orders').select('orders_id','processed','games.*').where('user_id',id).join('games','game_id','games_id').then(function(data){
+            res.status(200).send(data)
+        })
+    }      
 }
 
-exports.sumPedido = function(id,callback){
-    knex('orders').sum('price').where('user_id',id)
-    .join('linorders','linea_id','linorders_id')
-    .join('games','game_id','games_id').then(function(query){
-            callback(query)
-    })
-}
-
-exports.createPedido = function(idGame, idUser, idPedido, callback){
-    knex('orders').insert({
-        game_id: idGame,
-        user_id: idUser,
-        orders_id: idPedido,
-        processed: 0
-    }).then(function(){
-        callback(201)
+exports.createPedido = function(req,res){
+    var token = req.body.token;
+    console.log("Token: "+token)
+    var secret = '123456'
+    var idGame = req.params.idGame;
+    var cookies = jwt.decode(token, secret);
         
-    }).catch(function(error){
-        callback(400)
-    })
+    games.existsGame(idGame, function(existe){
+        if(existe == true){       
+            knex('orders').insert({
+                game_id: idGame,
+                user_id: cookies.idUser,
+                processed: 0
+            }).then(function(idPedido){
+                res.status(201).send({
+                    _links: {
+                        lista_pedidos: "/users/"+cookies.idUser+"/listaPedidos",
+                        _self: "/pedidos/"+idPedido
+                    }
+                    });
+                
+            }).catch(function(error){
+                res.status(400).send({userMessage: "Juego ya añadido", devMessage: ""})
+            })          
+
+        }else{
+            res.status(404).send({userMessage: "El juego no existe", devMessage:""})
+        }
+    }) 
 }
 
-exports.pagarPedido = function(id){
-    knex('orders')
-    .update({
-      processed: 'true'
-    }).where('orders_id', id)
+exports.pagarPedido = function(req, res){
+    var id = parseInt(req.params.id)
+    var idPed = parseInt(req.params.idOrder)
+        
+    if(isNaN(id) && isNaN(idPed)){
+        res.status(401).send({userMessage: "Las ids del usuario y del pedido tienen que ser numericas", devMessage: ""})
+    }else{             
+        knex('orders')
+        .where('orders_id', idPed)
+        .update({processed: 1})
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error al actualizar")
+        });      
+    }
+    
+}
+
+exports.deletePedido = function(req, res){
+    var id = parseInt(req.params.id)
+    var idPed = parseInt(req.params.idOrder)
+        
+    if(isNaN(id) && isNaN(idPed)){
+        res.status(401).send({userMessage: "Las ids del usuario y del pedido tienen que ser numericas", devMessage: ""})
+    }else{             
+        knex('orders')
+        .where('orders_id', idPed)
+        .del()
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error al borrar")
+        });      
+    }
 }

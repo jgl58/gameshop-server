@@ -18,15 +18,18 @@ var knex = require('knex')({
       filename: "./mydb.db"
     }
 });
+var db = require('./db.js');
+var carrito = new Array();
 
 
 exports.getUserByNick = function(nick, callback){
-
+   
     knex('users').where('nick',nick).first().then(function(query){
         callback(query)
     }).catch((error) => {
         callback("Error")
     });
+       
 }
 
 exports.existsUser = function(nick, callback){
@@ -48,3 +51,27 @@ exports.insertUser = function(data, callback){
         })
     }) 
 }
+
+exports.createUser = function(req,res){
+    var nick = req.body.nickname;
+    var pass = req.body.password;
+
+    users.existsUser(nick, function(exists){
+        console.log(exists)
+        if(!exists){
+            console.log("Usuario insertado");
+            var data = {
+                nick: nick,
+                pass: pass
+            }
+            users.insertUser(data, function(user){
+                res.send(user)
+            })
+            
+        }else{
+            console.log("Ese usuario ya existe");
+            res.status(401).send({userMessage: "Usuario existente, prueba con otro nick", devMessage: ""})
+        }
+    }) 
+}
+
