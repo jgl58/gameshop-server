@@ -46,3 +46,43 @@ exports.getComments = function(id,callback){
         callback(data)
     })  
 }
+
+exports.updateComment = function(req, res){
+    var idGame = parseInt(req.params.idGame)
+    var idComment = parseInt(req.params.idComment)
+    var newMessage = req.body.newMessage
+        
+    if(isNaN(idGame) && isNaN(idComment)){
+        res.status(401).send({userMessage: "Las ids del juego y del comentario tienen que ser numericas", devMessage: ""})
+    }else{             
+        knex('comments')
+        .where('comments_id', idComment)
+        .update({message: newMessage})
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error al actualizar")
+        });      
+    }
+    
+}
+
+exports.deleteComment = function(req, res){
+    var idGame = parseInt(req.params.idGame)
+    var idComment = parseInt(req.params.idComment)
+        
+    if(isNaN(idGame) && isNaN(idComment)){
+        res.status(401).send({userMessage: "Las ids del juego y del comment tienen que ser numericas", devMessage: ""})
+    }else{             
+        knex('comments')
+        .where('comments_id', idComment)
+        .del()
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error al borrar")
+        });      
+    }
+}

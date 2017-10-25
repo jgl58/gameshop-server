@@ -32,14 +32,16 @@ app.get('/games/:id',games.getGameById);
 app.get('/games/categories/:id',games.getGamesByCategory);
 
 //COMMENTS
-app.post('/games/:idGame/comments',auth.comprar,comments.createComment)
+app.post('/games/:idGame/comments',auth.loginWithBody,comments.createComment)
+app.put('/games/:idGame/comments/:idComment',auth.loginWithBody,comments.updateComment)
+app.delete('/games/:idGame/comments/:idComment',auth.loginWithBody,comments.deleteComment)
 
 //LOGIN
 app.post('/login',auth.loguear);
 app.post('/register',users.createUser);
 
 //PEDIDOS
-app.post('/games/:idGame/linPed',auth.comprar,pedidos.createPedido)
+app.post('/games/:idGame/linPed',auth.loginWithBody,pedidos.createPedido)
 app.get('/users/:id/orders',auth.login,pedidos.getPedidos)
 app.put('/users/:id/orders/:idOrder/pay',auth.login,pedidos.pagarPedido)
 app.delete('/users/:id/orders/:idOrder',auth.login,pedidos.deletePedido)

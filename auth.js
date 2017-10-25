@@ -20,7 +20,7 @@ exports.login = function(pet, res, next){
     }
 }
 
-exports.comprar = function(req,res,next){
+exports.loginWithBody = function(req,res,next){
     var token = req.body.token;
     console.log("Token: "+token)
     
