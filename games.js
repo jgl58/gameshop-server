@@ -8,8 +8,17 @@ var comments = require('./comments.js')
 
 
 exports.getGames = function(pet,resp){
+    var arrayLinks = new Array()
     knex.select().from('games').then(function(data){
-        resp.status(200).send(data) 
+        data.forEach(function(element) {
+            arrayLinks.push({
+                "linkGame": "/games/"+element.games_id
+            })
+        }, this);
+        resp.status(200).send({
+            "games": data,
+            "links": arrayLinks
+        }) 
     }) 
     
 }
@@ -34,7 +43,12 @@ exports.getGameById = function(pet,resp){
             comments.getComments(id, function(c){
                 resp.status(200).json({
                     "game": data,
-                    "comments": c
+                    "comments": c,
+                    "_links": {
+                        "self": "/games/"+id,
+                        "buyGame": "/games/"+id+"/orders",
+                        "createComment": "/games/"+id+"/comments"
+                    }
                 })
             })
         }).catch((error) => {
@@ -46,13 +60,22 @@ exports.getGameById = function(pet,resp){
 
 exports.getGamesByCategory = function(pet,resp){
     var id = parseInt(pet.params.id);
+    var arrayLinks = new Array()
     if(isNaN(id)){
         resp.status(400);
         resp.send("La id tiene que ser numerica");
     }else{
             knex('games').select().where('categories_id',id)
             .then(function(data){
-                resp.status(200).json(data)
+                data.forEach(function(element) {
+                    arrayLinks.push({
+                        "linkGame": "/games/"+element.games_id
+                    })
+                }, this);
+                resp.status(200).send({
+                    "games": data,
+                    "links": arrayLinks
+                }) 
             })
             .catch((error) => {
                 resp.status(404).send({userMessage:"El item no se ha encontrado",devMessage:""});

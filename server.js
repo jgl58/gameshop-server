@@ -40,8 +40,12 @@ app.delete('/games/:idGame/comments/:idComment',auth.loginWithBody,comments.dele
 app.post('/login',auth.loguear);
 app.post('/register',users.createUser);
 
+//USERS
+app.put('/users/:id',users.updateUser)
+app.get('/users/:id',users.getUser)
+
 //PEDIDOS
-app.post('/games/:idGame/linPed',auth.loginWithBody,pedidos.createPedido)
+app.post('/games/:idGame/orders',auth.loginWithBody,pedidos.createPedido)
 app.get('/users/:id/orders',auth.login,pedidos.getPedidos)
 app.put('/users/:id/orders/:idOrder/pay',auth.login,pedidos.pagarPedido)
 app.delete('/users/:id/orders/:idOrder',auth.login,pedidos.deletePedido)

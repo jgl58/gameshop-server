@@ -24,14 +24,26 @@ var games = require('./games.js')
 exports.getPedidos = function(pet,res){
     var id = parseInt(pet.params.id)
     var token = pet.headers.token;
-    console.log("Token: "+token)
+    var arrayLinks = new Array()
     var secret = '123456'
     if(isNaN(id)){
         res.status(401).send({userMessage: "La id del usuario tiene que ser numerica", devMessage: ""})
     }else{
+        var tokenDeco = jwt.decode(token, secret);
+
         knex('orders').select('orders_id','processed','games.*').where('user_id',id).join('games','game_id','games_id').then(function(data){
-            res.status(200).send(data)
+            data.forEach(function(element) {
+                arrayLinks.push({
+                    "linkOrder": "/users/"+tokenDeco.idUser+"/orders/"+element.orders_id
+                })
+            }, this);
+            res.status(200).send({
+                "orders": data,
+                "links": arrayLinks
+            }) 
         })
+
+        
     }      
 }
 

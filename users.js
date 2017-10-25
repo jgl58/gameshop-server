@@ -19,8 +19,6 @@ var knex = require('knex')({
     }
 });
 var db = require('./db.js');
-var carrito = new Array();
-
 
 exports.getUserByNick = function(nick, callback){
    
@@ -32,6 +30,42 @@ exports.getUserByNick = function(nick, callback){
        
 }
 
+exports.getUser = function(pet, res){
+    var id = pet.params.id
+     knex('users').where('users_id',id).first().then(function(query){
+         res.status(200).send({
+             "profile": query,
+             "links": {
+                "updateUser": "/users/"+id,
+                "deleteUser": "/users/"+id,
+                "orders": "/users/"+id+"/orders"
+             }
+         })
+     }).catch((error) => {
+         res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+     });
+        
+ }
+
+ exports.deleteUser = function(req, res){
+    var id = parseInt(req.params.id)
+        
+    if(isNaN(id)){
+        res.status(401).send({userMessage: "Las id del usuario tiene que ser numerica", devMessage: ""})
+    }else{             
+        knex('users')
+        .where('users_id', id)
+        .del()
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error al borrar")
+            es.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+        });      
+    }
+}
+
 exports.existsUser = function(nick, callback){
     knex('users').count('users_id as c').where('nick',nick).then(function(total){
         if(total[0].c == 1){
@@ -40,16 +74,6 @@ exports.existsUser = function(nick, callback){
             callback(false)
         }
     })
-}
-
-exports.insertUser = function(data, callback){
-    knex('users').insert([
-        {nick: data.nick, pass: data.pass, name: "Name", lastname: "Lastname"}
-    ]).then(function(f){
-        knex('users').where('nick',data.nick).first().then(function(query){
-            callback(query)
-        })
-    }) 
 }
 
 exports.createUser = function(req,res){
@@ -64,10 +88,13 @@ exports.createUser = function(req,res){
                 nick: nick,
                 pass: pass
             }
-            users.insertUser(data, function(user){
-                res.send(user)
-            })
-            
+            knex('users').insert([
+                {nick: data.nick, pass: data.pass, name: "Name", lastname: "Lastname"}
+            ]).then(function(f){
+                knex('users').where('nick',data.nick).first().then(function(query){
+                    res.send(user)
+                })
+            }) 
         }else{
             console.log("Ese usuario ya existe");
             res.status(401).send({userMessage: "Usuario existente, prueba con otro nick", devMessage: ""})
@@ -75,3 +102,22 @@ exports.createUser = function(req,res){
     }) 
 }
 
+exports.updateUser = function(req, res){
+    var id = parseInt(req.params.id)
+    var newData = req.body.newData
+    if(isNaN(id)){
+        res.status(401).send({userMessage: "Las id del usuario tiene que ser numerica", devMessage: ""})
+    }else{             
+        knex('users')
+        .where('users_id', id)
+        .update({nick: data.nick, pass: data.pass, name: data.name, lastname: data.lastname})
+        .then(function(count){
+            console.log(count)
+            res.status(204)
+        }).catch(function(err){
+            console.log("Error el usuario no existe")
+            res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
+        });      
+    }
+    
+}
