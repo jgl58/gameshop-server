@@ -25,6 +25,7 @@ var pedidos = require('./pedidos.js')
 var auth = require('./auth.js')
 var comments = require('./comments.js')
 
+app.get('/hola', comments.sdfgsdfg)
 
 //GAMES
 app.get('/games', games.getGames);
