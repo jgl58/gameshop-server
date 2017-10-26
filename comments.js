@@ -87,6 +87,6 @@ exports.deleteComment = function(req, res){
     }
 }
 
-exports.sdfgsdfg = function(){
-    
+exports.sdfgsdfg = function(pet, res){
+    res.send("Hola")
 }
