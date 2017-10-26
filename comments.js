@@ -86,3 +86,7 @@ exports.deleteComment = function(req, res){
         });      
     }
 }
+
+exports.sdfgsdfg = function(){
+    
+}
