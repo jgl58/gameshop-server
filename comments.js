@@ -62,7 +62,7 @@ exports.updateComment = function(req, res){
             console.log(count)
             res.status(204)
         }).catch(function(err){
-            console.log("Error al actualizar")
+            res.status(404).send({userMessage: "El Comment no existe", devMessage:""})
         });      
     }
     
@@ -82,7 +82,7 @@ exports.deleteComment = function(req, res){
             console.log(count)
             res.status(204)
         }).catch(function(err){
-            console.log("Error al borrar")
+            res.status(404).send({userMessage: "El juego no existe", devMessage:""})
         });      
     }
 }

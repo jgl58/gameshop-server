@@ -41,7 +41,9 @@ exports.getPedidos = function(pet,res){
                 "orders": data,
                 "links": arrayLinks
             }) 
-        })
+        }).catch(function(error){
+            res.status(400).send({userMessage: "El usuario no existe", devMessage: ""})
+        })  
 
         
     }      
@@ -92,7 +94,7 @@ exports.pagarPedido = function(req, res){
             console.log(count)
             res.status(204)
         }).catch(function(err){
-            console.log("Error al actualizar")
+            res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
         });      
     }
     
@@ -112,7 +114,7 @@ exports.deletePedido = function(req, res){
             console.log(count)
             res.status(204)
         }).catch(function(err){
-            console.log("Error al borrar")
+            res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
         });      
     }
 }
