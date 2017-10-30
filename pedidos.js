@@ -24,7 +24,7 @@ var games = require('./games.js')
 
 exports.getPedidos = function(pet,res){
     var id = parseInt(pet.params.id)
-    var token = pet.headers.Authorization;
+    var token = pet.headers.authorization;
     var arrayLinks = new Array()
     var secret = '123456'
     if(isNaN(id)){
