@@ -6,7 +6,7 @@ var users = require('./users.js');
 
 exports.login = function(pet, res, next){
     var id = parseInt(pet.params.id)
-    var token = pet.headers.token;
+    var token = pet.headers.Authorization;
    //console.log("Token: "+token)
     if(!token){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
