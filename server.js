@@ -50,11 +50,12 @@ app.get('/static',function(req,res){
 
 //USERS
 app.put('/users/:id',auth.loginUsers,users.updateUser)
-app.get('/users/:id',auth.loginUsers,users.getUser)
+app.get('/users/:id',auth.login,users.getUser)
 
 //PEDIDOS
 app.post('/games/:idGame/orders',auth.loginWithBody,pedidos.createPedido)
 app.get('/users/:id/orders',auth.login,pedidos.getPedidos)
+app.get('/users/:id/orders/:idOrder',auth.login,pedidos.getPedido)
 app.put('/users/:id/orders/:idOrder',auth.loginUsers,pedidos.pagarPedido)
 app.delete('/users/:id/orders/:idOrder',auth.loginUsers,pedidos.deletePedido)
 

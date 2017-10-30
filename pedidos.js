@@ -50,6 +50,36 @@ exports.getPedidos = function(pet,res){
     }      
 }
 
+exports.getPedido = function(pet,res){
+    var id = parseInt(pet.params.id)
+    var idOrder = pet.params.idOrder
+    var token = pet.headers.authorization;
+    var arrayLinks = new Array()
+    var secret = '123456'
+    if(isNaN(id)){
+        res.status(401).send({userMessage: "La id del usuario tiene que ser numerica", devMessage: ""})
+    }else{
+        var tokenDeco = jwt.decode(token, secret);
+
+        knex('orders').select('orders_id','processed','games.*').where('user_id',id).where('orders_id',idOrder).join('games','game_id','games_id').then(function(data){
+            data.forEach(function(element) {
+                arrayLinks.push({
+                    "linkOrder": "/users/"+tokenDeco.idUser+"/orders/"+element.orders_id,
+                    "linkGame": "/games/"+element.games_id
+                })
+            }, this);
+            res.status(200).send({
+                "orders": data,
+                "links": arrayLinks
+            }) 
+        }).catch(function(error){
+            res.status(400).send({userMessage: "El usuario no existe", devMessage: ""})
+        })  
+
+        
+    }      
+}
+
 exports.createPedido = function(req,res){
     var token = req.body.token;
     //console.log("Token: "+token)
@@ -66,8 +96,8 @@ exports.createPedido = function(req,res){
             }).then(function(idPedido){
                 res.status(201).send({
                     _links: {
-                        lista_pedidos: "/users/"+cookies.idUser+"/listaPedidos",
-                        _self: "/pedidos/"+idPedido
+                        lista_pedidos: "/users/"+cookies.idUser+"/orders",
+                        _self: "/users/"+cookies.idUser+"/orders"+idPedido
                     }
                     });
                 
