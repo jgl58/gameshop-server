@@ -2,7 +2,8 @@ var knex = require('knex')({
     client: 'sqlite3',
     connection: {
       filename: "./mydb.db"
-    }
+    },
+    useNullAsDefault: true
 });
 var bp = require('body-parser');
 var jwt = require('jwt-simple');
@@ -15,7 +16,7 @@ exports.createComment = function(req,res){
     var secret = '123456'
     var idGame = req.params.idGame;
     var cookies = jwt.decode(token, secret);
-    console.log(cookies)
+   // console.log(cookies)
     games.existsGame(idGame, function(existe){
         if(existe == true){       
             knex('comments').insert({
@@ -59,7 +60,7 @@ exports.updateComment = function(req, res){
         .where('comments_id', idComment)
         .update({message: newMessage})
         .then(function(count){
-            console.log(count)
+            //console.log(count)
             res.status(204)
         }).catch(function(err){
             res.status(404).send({userMessage: "El Comment no existe", devMessage:""})
@@ -79,14 +80,10 @@ exports.deleteComment = function(req, res){
         .where('comments_id', idComment)
         .del()
         .then(function(count){
-            console.log(count)
+            //console.log(count)
             res.status(204)
         }).catch(function(err){
-            res.status(404).send({userMessage: "El juego no existe", devMessage:""})
+            res.status(404).send({userMessage: "El comentario no existe", devMessage:""})
         });      
     }
-}
-
-exports.sdfgsdfg = function(pet, res){
-    res.send("Hola")
 }

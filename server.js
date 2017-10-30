@@ -17,7 +17,8 @@ var knex = require('knex')({
     client: 'sqlite3',
     connection: {
       filename: "./mydb.db"
-    }
+    },
+    useNullAsDefault: true
 });
 var games = require('./games.js')
 var users = require('./users.js')
@@ -25,7 +26,7 @@ var pedidos = require('./pedidos.js')
 var auth = require('./auth.js')
 var comments = require('./comments.js')
 
-app.get('/hola', comments.sdfgsdfg)
+module.exports = app;
 
 //GAMES
 app.get('/games', games.getGames);
@@ -41,15 +42,21 @@ app.delete('/games/:idGame/comments/:idComment',auth.loginWithBody,comments.dele
 app.post('/login',auth.loguear);
 app.post('/register',users.createUser);
 
+//GOOGLE
+app.use('/login/google',express.static('web'))
+app.get('/static',function(req,res){
+    res.send(200)
+})
+
 //USERS
-app.put('/users/:id',users.updateUser)
-app.get('/users/:id',users.getUser)
+app.put('/users/:id',auth.loginUsers,users.updateUser)
+app.get('/users/:id',auth.loginUsers,users.getUser)
 
 //PEDIDOS
 app.post('/games/:idGame/orders',auth.loginWithBody,pedidos.createPedido)
 app.get('/users/:id/orders',auth.login,pedidos.getPedidos)
-app.put('/users/:id/orders/:idOrder/pay',auth.login,pedidos.pagarPedido)
-app.delete('/users/:id/orders/:idOrder',auth.login,pedidos.deletePedido)
+app.put('/users/:id/orders/:idOrder',auth.loginUsers,pedidos.pagarPedido)
+app.delete('/users/:id/orders/:idOrder',auth.loginUsers,pedidos.deletePedido)
 
 //Este método delega en el server.listen "nativo" de Node
    
@@ -81,7 +88,6 @@ app.listen(process.env.PORT || 3000, function () {
         table.integer('price');
         table.integer('categories_id');
         table.foreign('categories_id').references('categories.categories_id');
-        table.integer('valoration');
         
     }).then(function () {
       //  console.log('Games Table is Created!');
@@ -103,7 +109,6 @@ app.listen(process.env.PORT || 3000, function () {
         table.increments('orders_id');
         table.integer('game_id');
         table.foreign('game_id').references('games.games_id');
-        table.timestamp('created_at');
         table.integer('processed');
         table.integer('user_id');
         table.foreign('user_id').references('users.users_id');
@@ -125,7 +130,7 @@ app.listen(process.env.PORT || 3000, function () {
     })
     knex('users').count('users_id as c').then(function(total){
         if(total[0].c == 0){
-            console.log("Usuarios insertadas");
+            console.log("Usuarios insertados");
             return knex('users').insert([
                 {users_id: 1, nick: "jonay", pass: "pass", name: "name", lastname: "lastname"}
             ])

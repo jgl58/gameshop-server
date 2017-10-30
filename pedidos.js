@@ -16,7 +16,8 @@ var knex = require('knex')({
     client: 'sqlite3',
     connection: {
       filename: "./mydb.db"
-    }
+    },
+    useNullAsDefault: true
 });
 
 var games = require('./games.js')
@@ -51,7 +52,7 @@ exports.getPedidos = function(pet,res){
 
 exports.createPedido = function(req,res){
     var token = req.body.token;
-    console.log("Token: "+token)
+    //console.log("Token: "+token)
     var secret = '123456'
     var idGame = req.params.idGame;
     var cookies = jwt.decode(token, secret);
@@ -91,7 +92,7 @@ exports.pagarPedido = function(req, res){
         .where('orders_id', idPed)
         .update({processed: 1})
         .then(function(count){
-            console.log(count)
+            //console.log(count)
             res.status(204)
         }).catch(function(err){
             res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
@@ -111,7 +112,7 @@ exports.deletePedido = function(req, res){
         .where('orders_id', idPed)
         .del()
         .then(function(count){
-            console.log(count)
+            //console.log(count)
             res.status(204)
         }).catch(function(err){
             res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
