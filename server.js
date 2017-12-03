@@ -8,11 +8,14 @@ var moment = require('moment');
 var uuid = require('uuid/v4')
 var app = express();
 var secret = '123456'
+var cors = require('cors');
 
 app.use(bp.json());
 app.use(bp.urlencoded({
     extended: true
 }));
+
+app.use(cors());
 var knex = require('knex')({
     client: 'sqlite3',
     connection: {
