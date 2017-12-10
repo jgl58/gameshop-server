@@ -9,13 +9,13 @@ var uuid = require('uuid/v4')
 var app = express();
 var secret = '123456'
 var cors = require('cors');
-
+app.use(cors());
 app.use(bp.json());
 app.use(bp.urlencoded({
     extended: true
 }));
 
-app.use(cors());
+
 var knex = require('knex')({
     client: 'sqlite3',
     connection: {
@@ -90,6 +90,7 @@ app.listen(process.env.PORT || 3000, function () {
         table.string('title');
         table.integer('year');
         table.integer('price');
+        table.string('url');
         table.integer('categories_id');
         table.foreign('categories_id').references('categories.categories_id');
         
@@ -145,11 +146,11 @@ app.listen(process.env.PORT || 3000, function () {
         if(total[0].c == 0){
             console.log("Juegos insertados");
             return knex('games').insert([
-                {games_id:1, title:"FIFA 18", year:2017, price: 65, categories_id: 1},
-                {games_id:2, title:"NBA 2K18", year:2017, price: 45, categories_id: 1},
-                {games_id:3, title:"Call Of Duty: WWII", year:2017, price: 80, categories_id: 2},
-                {games_id:4, title:"Counter Strike: Global Ofensive", year:2012, price: 15, categories_id: 2},
-                {games_id:5, title:"The Legend Of Zelda: Breath Of The Wild", year:2017, price: 40, categories_id: 3}
+                {games_id:1, title:"FIFA 18", year:2017, price: 65, categories_id: 1, url: "https://cdn02.nintendo-europe.com/media/images/11_square_images/games_18/nintendo_switch_5/SQ_NSwitch_EASportsFifa18.jpg"},
+                {games_id:2, title:"NBA 2K18", year:2017, price: 45, categories_id: 1, url: "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/5880/5880000_sd.jpg;maxHeight=550;maxWidth=642"},
+                {games_id:3, title:"Call Of Duty: WWII", year:2017, price: 80, categories_id: 2, url: "http://cahosgaming.com.ar/uploads/b/13B20170426_1493251330_COD%20-%20WW2.jpg"},
+                {games_id:4, title:"Counter Strike: Global Ofensive", year:2012, price: 15, categories_id: 2, url: "https://i11b.3djuegos.com/juegos/7909/counterstrike_global_offensive/fotos/ficha/counterstrike_global_offensive-1942557.jpg"},
+                {games_id:5, title:"The Legend Of Zelda: Breath Of The Wild", year:2017, price: 40, categories_id: 3, url: "https://cdn4.areajugones.es/wp-content/uploads/2017/01/zelda-breath-of-the-wild-europa.jpeg"}
             ]) 
         }
     })

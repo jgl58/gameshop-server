@@ -81,7 +81,7 @@ exports.getPedido = function(pet,res){
 }
 
 exports.createPedido = function(req,res){
-    var token = req.body.token;
+    var token = req.headers.authorization;
     //console.log("Token: "+token)
     var secret = '123456'
     var idGame = req.params.idGame;

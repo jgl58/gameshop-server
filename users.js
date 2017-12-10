@@ -59,7 +59,7 @@ exports.getUser = function(pet, res){
         .del()
         .then(function(count){
             //console.log(count)
-            res.status(204)
+            res.sendStatus(204)
         }).catch(function(err){
             //console.log("Error al borrar")
             es.status(404).send({userMessage: "Usuario no existente", devMessage: ""})
@@ -103,7 +103,7 @@ exports.createUser = function(req,res){
             ]).then(function(f){
                 knex('users').where('nick',data.nick).first().then(function(query){
                     res.setHeader('Location','/users/'+query.users_id);
-                    res.status(201);
+                    res.sendStatus(201);
                 })
             }) 
         }else{
@@ -124,7 +124,7 @@ exports.updateUser = function(req, res){
         .update({nick: data.nick, pass: data.pass, name: data.name, lastname: data.lastname})
         .then(function(count){
             //console.log(count)
-            res.status(204)
+            res.sendStatus(204)
         }).catch(function(err){
             //console.log("Error el usuario no existe")
             res.status(404).send({userMessage: "Usuario no existente", devMessage: ""})

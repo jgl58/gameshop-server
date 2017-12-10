@@ -12,6 +12,7 @@ exports.login = function(pet, res, next){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         var data = jwt.decode(token, secret);
+        console.log(data.idUser + "   "+id)
         if(data.idUser != id){
             res.status(401).send({userMessage: "Necesitas iniciar sesion", devMessage: ""})
         }else{
@@ -21,8 +22,8 @@ exports.login = function(pet, res, next){
 }
 
 exports.loginWithBody = function(req,res,next){
-    var token = req.body.token;
-    //console.log("Token: "+token)
+    var token = req.headers.authorization;
+   //console.log("Token: "+token)
     
     var idGame = req.params.idGame;
 
@@ -42,7 +43,7 @@ exports.loginWithBody = function(req,res,next){
 }
 
 exports.loginUsers = function(req,res,next){
-    var token = req.body.token;
+    var token = req.headers.authorization;
     //console.log("Token: "+token)
     
     var idGame = req.params.idGame;
@@ -57,10 +58,10 @@ exports.loginUsers = function(req,res,next){
 }
 
 exports.loguear = function(pet,res){
-    //console.log(pet.body)
+    
     var nick = pet.body.nick;
     var pass = pet.body.pass;
-    
+   // console.log(pet.body.nick)
      users.correctLog(nick,pass, function(exists){
          if(exists){
              users.getUserByNick(nick, function(data){
@@ -74,8 +75,7 @@ exports.loguear = function(pet,res){
                  res.status(201).send({
                     "token": token,
                     "_links": {
-                        "self": "/users/"+data.users_id,
-                        "orders": "/users/"+data.users_id+"/orders"
+                        "user_id": data.users_id
                     }
                  })
              })

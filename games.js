@@ -55,7 +55,7 @@ exports.getGameById = function(pet,resp){
     }else{    
         exists(id,function(exists){
             if(exists==true){
-                knex('games').select().where('games_id',id)
+                knex('games').select('games.*','type').where('games_id',id).innerJoin('categories', 'games.categories_id', '=', 'categories.categories_id')
                 .then(function(data){
                     comments.getComments(id, function(c){
                         resp.status(200).json({
