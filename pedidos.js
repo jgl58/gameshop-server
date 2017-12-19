@@ -95,6 +95,7 @@ exports.createPedido = function(req,res){
                 processed: 0
             }).then(function(idPedido){
                 res.status(201).send({
+                    idPedido: idPedido,
                     _links: {
                         lista_pedidos: "/users/"+cookies.idUser+"/orders",
                         _self: "/users/"+cookies.idUser+"/orders"+idPedido
@@ -123,7 +124,7 @@ exports.pagarPedido = function(req, res){
         .update({processed: 1})
         .then(function(count){
             //console.log(count)
-            res.status(204)
+            res.sendStatus(204)
         }).catch(function(err){
             res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
         });      
@@ -143,7 +144,7 @@ exports.deletePedido = function(req, res){
         .del()
         .then(function(count){
             //console.log(count)
-            res.status(204)
+            res.sendStatus(204)
         }).catch(function(err){
             res.status(404).send({userMessage: "El pedido no existe", devMessage: ""})
         });      

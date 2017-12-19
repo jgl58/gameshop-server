@@ -81,8 +81,7 @@ app.listen(process.env.PORT || 3000, function () {
         table.string('name');
         table.string('lastname');
     }).then(function () {
-       // console.log('Users Table is Created!');
-        
+       // console.log('Users Table is Created!');  
     });
 
     knex.schema.createTableIfNotExists('games', function (table) {

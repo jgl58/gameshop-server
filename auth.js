@@ -12,7 +12,7 @@ exports.login = function(pet, res, next){
         res.status(401).send({userMessage: "Se necesita token", devMessage: ""})
     }else{
         var data = jwt.decode(token, secret);
-        console.log(data.idUser + "   "+id)
+        //console.log(data.idUser + "   "+id)
         if(data.idUser != id){
             res.status(401).send({userMessage: "Necesitas iniciar sesion", devMessage: ""})
         }else{
@@ -71,6 +71,7 @@ exports.loguear = function(pet,res){
                      idUser: data.users_id
                  } 
                  var token = jwt.encode(payload,secret);
+                 console.log(token)
                  res.setHeader('Authorization','Bearer',token);
                  res.status(201).send({
                     "token": token,
